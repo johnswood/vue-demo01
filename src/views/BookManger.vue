@@ -68,7 +68,7 @@
             return {
                 maxId:2,
                 book:{name:'',price:''},
-                baseurl:"http://localhost:3000/books/",
+                baseurl:"http://www.shangzai.com:3000/books/",
                 dialogVisible:false,
                 books:[{id:1,name:"book1",price:200},
                     {id:2,name:"book2",price:230}]
