@@ -48,7 +48,7 @@
                     label="操作"
                     width="100">
                 <template slot-scope="book">
-                    <el-button @click="deleteBook(book)" type="text" size="small">删除</el-button>
+                    <el-button @click="deleteBook(book.row)" type="text" size="small">删除</el-button>
                     <el-button @click="dialogVisible=true" type="text" size="small">编辑</el-button>
                 </template>
             </el-table-column>
@@ -60,28 +60,103 @@
 </template>
 
 <script>
-    import _ from 'lodash'
+    // import _ from 'lodash'
+
     export default {
         name: "BookManger",
         data(){
             return {
                 maxId:2,
                 book:{name:'',price:''},
+                baseurl:"http://localhost:3000/books/",
                 dialogVisible:false,
                 books:[{id:1,name:"book1",price:200},
                     {id:2,name:"book2",price:230}]
             }
         },
+        mounted(){
+            fetch(this.baseurl)
+                .then(res=>res.json())
+                .then(bs => this.books = bs)
+        },
         methods:{
             deleteBook(book){
-                let index=this.books.findIndex(item=>item.id==book.id)
-                this.books.splice(index,1)
+                window.console.log(book)
+
+                //let request = require('request');
+                let myurl = this.baseurl + "/"+book.id;
+                // request({
+                //     url: myurl,
+                //     method: "DELETE",
+                //     headers: {
+                //         "content-type": "application/json",
+                //     },
+                //     body: '{}'
+                // }, function(error, response) {
+                //     if (!error && response.statusCode == 200) {
+                //
+                //         fetch("http://localhost:3000/books")
+                //             .then(res=>res.json())
+                //             .then(bs => this.books = bs);
+                //         alert("Del Book Successful.");
+                //     } else {
+                //         alert("Del Book Error.")
+                //     }
+                // });
+                fetch(myurl,{
+                    method:"DELETE",
+                    headers:{
+                        "content-type": "application/json"
+                    },
+                    body: JSON.stringify({})
+                }).then(res=>res.json())
+                    .then(nb=>{
+                        //window.console.log(nb);
+                        if(!nb.code) {
+                            let index=this.books.findIndex(item=>item.id==book.id)
+                            this.books.splice(index,1)
+                        }
+                    })
+
+
             },
             addBook(){
-                this.book.id=++this.maxId
-                let bk=_.cloneDeep(this.book)
-                this.books.push(bk)
+                // this.book.id=++this.maxId
+                // let bk=_.cloneDeep(this.book)
+                // this.books.push(bk)
+                // var request = require('request');
+                // request({
+                //     url: "http://localhost:3000/books/add",
+                //     method: "PUT",
+                //     json: true,
+                //     headers: {
+                //         "content-type": "application/json",
+                //     },
+                //     body: this.book
+                // }, function(error, response) {
+                //     if (!error && response.statusCode == 200) {
+                //         fetch("http://localhost:3000/books")
+                //             .then(res=>res.json())
+                //             .then(bs => this.books = bs);
+                //         alert("Add Book Successful.");
+                //     } else {
+                //         alert("Add Book Error.")
+                //     }
+                // });
+                fetch(this.baseurl,{
+                    method:"PUT",
+                    headers:{
+                        "content-type": "application/json"
+                    },
+                    body: JSON.stringify(this.book)
+                }).then(res=>res.json())
+                .then(nb=>this.books.push(nb))
+
+            },
+            handleClose(){
+
             }
+
         },
         computed:{
             priceTotal(){
