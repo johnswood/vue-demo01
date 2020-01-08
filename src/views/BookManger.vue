@@ -69,6 +69,7 @@
                 maxId:2,
                 book:{name:'',price:''},
                 baseurl:"http://www.shangzai.com:3000/books/",
+                //baseurl:"http://localhost:3000/books",
                 dialogVisible:false,
                 books:[{id:1,name:"book1",price:200},
                     {id:2,name:"book2",price:230}]
@@ -84,7 +85,7 @@
                 window.console.log(book)
 
                 //let request = require('request');
-                let myurl = this.baseurl + "/"+book.id;
+                let myurl = this.baseurl + "/" + book.id;
                 // request({
                 //     url: myurl,
                 //     method: "DELETE",
@@ -107,12 +108,11 @@
                     method:"DELETE",
                     headers:{
                         "content-type": "application/json"
-                    },
-                    body: JSON.stringify({})
+                    }
                 }).then(res=>res.json())
-                    .then(nb=>{
-                        //window.console.log(nb);
-                        if(!nb.code) {
+                    .then(rs=>{
+                        window.console.log(rs);
+                        if(!rs.code) {
                             let index=this.books.findIndex(item=>item.id==book.id)
                             this.books.splice(index,1)
                         }
@@ -144,7 +144,7 @@
                 //     }
                 // });
                 fetch(this.baseurl,{
-                    method:"PUT",
+                    method:"POST",
                     headers:{
                         "content-type": "application/json"
                     },
